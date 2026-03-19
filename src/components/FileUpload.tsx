@@ -41,7 +41,7 @@ export default function FileUpload({ userId, files, onRefresh }: FileUploadProps
       return;
     }
 
-    // Generate mock performance score
+    // Generate mock performance score for this file
     const mockScore = Math.round((Math.random() * 30 + 70) * 100) / 100;
 
     const { error: dbError } = await supabase.from("uploaded_files").insert({
@@ -55,6 +55,35 @@ export default function FileUpload({ userId, files, onRefresh }: FileUploadProps
     if (dbError) {
       toast({ title: "Error saving record", description: dbError.message, variant: "destructive" });
     } else {
+      // Recalculate profile metrics based on all uploaded files
+      const { data: allFiles } = await supabase
+        .from("uploaded_files")
+        .select("performance_score")
+        .eq("user_id", userId);
+
+      const scores = (allFiles || [])
+        .map((f) => f.performance_score)
+        .filter((s): s is number => s != null);
+
+      const totalFiles = scores.length;
+      const avgScore = scores.reduce((a, b) => a + b, 0) / totalFiles;
+      const productivity = Math.min(100, Math.round(avgScore * 0.9 + totalFiles * 2));
+      const rating = Math.min(5, Math.round((avgScore / 20) * 10) / 10);
+
+      await supabase.from("profiles").update({
+        projects_completed: totalFiles,
+        performance_score: Math.round(avgScore * 100) / 100,
+        productivity_score: productivity,
+        rating: rating,
+      }).eq("user_id", userId);
+
+      // Update performance history for the current month
+      const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const currentMonth = monthNames[new Date().getMonth()];
+      await supabase.from("performance_history").update({
+        score: Math.round(avgScore * 100) / 100,
+      }).eq("user_id", userId).eq("month", currentMonth);
+
       toast({ title: "File uploaded!", description: `Performance score: ${mockScore}%` });
     }
     setUploading(false);
