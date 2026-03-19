@@ -103,7 +103,7 @@ export default function FileUpload({ userId, files, onRefresh }: FileUploadProps
                       {f.performance_score}%
                     </span>
                   )}
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(f.id, f.file_name)}>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(f.id, f.file_path)}>
                     <Trash2 className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </div>
