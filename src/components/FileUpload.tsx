@@ -8,6 +8,7 @@ import { Upload, FileText, Trash2, Loader2 } from "lucide-react";
 interface UploadedFile {
   id: string;
   file_name: string;
+  file_path: string;
   file_size: number;
   performance_score: number | null;
   uploaded_at: string;
