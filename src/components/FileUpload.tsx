@@ -88,7 +88,7 @@ export default function FileUpload({ userId, files, onRefresh }: FileUploadProps
     }
     setUploading(false);
     if (inputRef.current) inputRef.current.value = "";
-    onRefresh();
+    await onRefresh();
   }, [userId, toast, onRefresh]);
 
   const handleDelete = async (id: string, filePath: string) => {
