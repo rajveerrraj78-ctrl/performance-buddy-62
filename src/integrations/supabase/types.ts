@@ -14,7 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      performance_history: {
+        Row: {
+          created_at: string
+          id: string
+          month: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          employee_id: string
+          full_name: string
+          id: string
+          performance_score: number
+          productivity_score: number
+          projects_completed: number
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          employee_id?: string
+          full_name?: string
+          id?: string
+          performance_score?: number
+          productivity_score?: number
+          projects_completed?: number
+          rating?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          employee_id?: string
+          full_name?: string
+          id?: string
+          performance_score?: number
+          productivity_score?: number
+          projects_completed?: number
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      uploaded_files: {
+        Row: {
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          performance_score: number | null
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          file_name: string
+          file_path: string
+          file_size?: number
+          id?: string
+          performance_score?: number | null
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          performance_score?: number | null
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
