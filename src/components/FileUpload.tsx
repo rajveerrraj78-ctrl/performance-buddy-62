@@ -55,34 +55,29 @@ export default function FileUpload({ userId, files, onRefresh }: FileUploadProps
     if (dbError) {
       toast({ title: "Error saving record", description: dbError.message, variant: "destructive" });
     } else {
-      // Recalculate profile metrics based on all uploaded files
-      const { data: allFiles } = await supabase
-        .from("uploaded_files")
-        .select("performance_score")
-        .eq("user_id", userId);
-
-      const scores = (allFiles || [])
-        .map((f) => f.performance_score)
-        .filter((s): s is number => s != null);
-
-      const totalFiles = scores.length;
-      const avgScore = scores.reduce((a, b) => a + b, 0) / totalFiles;
-      const productivity = Math.min(100, Math.round(avgScore * 0.9 + totalFiles * 2));
-      const rating = Math.min(5, Math.round((avgScore / 20) * 10) / 10);
+      // Generate random metrics after upload
+      const totalFiles = (files?.length || 0) + 1;
+      const randProjects = Math.floor(Math.random() * 15 + totalFiles * 3);
+      const randProductivity = Math.round((Math.random() * 25 + 65) * 100) / 100;
+      const randRating = Math.round((Math.random() * 1.5 + 3.5) * 10) / 10;
+      const randPerformance = Math.round((Math.random() * 25 + 70) * 100) / 100;
 
       await supabase.from("profiles").update({
-        projects_completed: totalFiles,
-        performance_score: Math.round(avgScore * 100) / 100,
-        productivity_score: productivity,
-        rating: rating,
+        projects_completed: randProjects,
+        performance_score: randPerformance,
+        productivity_score: randProductivity,
+        rating: Math.min(5, randRating),
       }).eq("user_id", userId);
 
-      // Update performance history for the current month
+      // Update all months with random scores
       const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-      const currentMonth = monthNames[new Date().getMonth()];
-      await supabase.from("performance_history").update({
-        score: Math.round(avgScore * 100) / 100,
-      }).eq("user_id", userId).eq("month", currentMonth);
+      await Promise.all(
+        monthNames.map((month) =>
+          supabase.from("performance_history").update({
+            score: Math.round((Math.random() * 35 + 60) * 100) / 100,
+          }).eq("user_id", userId).eq("month", month)
+        )
+      );
 
       toast({ title: "File uploaded!", description: `Performance score: ${mockScore}%` });
     }
