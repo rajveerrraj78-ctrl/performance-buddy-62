@@ -9,7 +9,7 @@ import FileUpload from "@/components/FileUpload";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Star, TrendingUp, Activity, LogOut, BarChart3, Menu } from "lucide-react";
+import { Briefcase, Star, TrendingUp, Activity, LogOut, BarChart3, Menu, Upload } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Profile {
