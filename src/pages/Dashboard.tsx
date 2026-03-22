@@ -85,33 +85,46 @@ export default function Dashboard() {
             <p className="text-sm text-muted-foreground">Employee ID: {profile?.employee_id} · {profile?.email}</p>
           </div>
 
-          {/* Metric cards */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-            <MetricCard title="Projects Completed" value={profile?.projects_completed ?? 0} icon={Briefcase} />
-            <MetricCard title="Productivity Score" value={`${profile?.productivity_score ?? 0}%`} icon={TrendingUp} accent />
-            <MetricCard title="Rating" value={`${profile?.rating ?? 0} / 5`} icon={Star} />
-            <MetricCard title="Performance" value={`${profile?.performance_score ?? 0}%`} icon={Activity} accent />
-          </div>
-
-          {/* Productivity bar */}
-          <Card className="mb-6 fade-in">
-            <CardHeader>
-              <CardTitle className="text-lg">Productivity Overview</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span>Overall Productivity</span>
-                <span className="font-semibold text-success">{profile?.productivity_score ?? 0}%</span>
+          {files.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <Upload className="mb-4 h-16 w-16 text-muted-foreground/50" />
+              <h2 className="text-xl font-semibold mb-2">Upload a file to view performance data</h2>
+              <p className="text-sm text-muted-foreground mb-6 max-w-md">
+                Your dashboard metrics will populate with performance scores once you upload a project file.
+              </p>
+              <FileUpload userId={user.id} files={files} onRefresh={fetchData} />
+            </div>
+          ) : (
+            <>
+              {/* Metric cards */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+                <MetricCard title="Projects Completed" value={profile?.projects_completed ?? 0} icon={Briefcase} />
+                <MetricCard title="Productivity Score" value={`${profile?.productivity_score ?? 0}%`} icon={TrendingUp} accent />
+                <MetricCard title="Rating" value={`${profile?.rating ?? 0} / 5`} icon={Star} />
+                <MetricCard title="Performance" value={`${profile?.performance_score ?? 0}%`} icon={Activity} accent />
               </div>
-              <Progress value={profile?.productivity_score ?? 0} className="h-3" />
-            </CardContent>
-          </Card>
 
-          {/* Chart + File upload */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            <PerformanceChart data={history} />
-            <FileUpload userId={user.id} files={files} onRefresh={fetchData} />
-          </div>
+              {/* Productivity bar */}
+              <Card className="mb-6 fade-in">
+                <CardHeader>
+                  <CardTitle className="text-lg">Productivity Overview</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span>Overall Productivity</span>
+                    <span className="font-semibold text-success">{profile?.productivity_score ?? 0}%</span>
+                  </div>
+                  <Progress value={profile?.productivity_score ?? 0} className="h-3" />
+                </CardContent>
+              </Card>
+
+              {/* Chart + File upload */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                <PerformanceChart data={history} />
+                <FileUpload userId={user.id} files={files} onRefresh={fetchData} />
+              </div>
+            </>
+          )}
         </main>
       </div>
     </div>
